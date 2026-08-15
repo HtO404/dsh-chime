@@ -1,0 +1,8 @@
+# dsh-chime bundle patch: inserts the dual-face plugin row into the web
+# profile roster. The node half (exports ".") runs in the host process
+# (agent/status listener + /dsh-chime/* routes), and the `dsh.client`
+# declaration in package.json makes the browser half (exports "./client",
+# served at /plugins/chime/client.js) load in the web GUI.
+- insert:
+    - id: chime
+      name: '@linxin666/dsh-chime'
