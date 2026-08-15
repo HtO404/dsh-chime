@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dsh-chime 演示</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #F7F4EE 0%, #FBF1E3 100%);
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    cursor: none;
+    overflow: hidden;
+  }
+  .cursor {
+    position: fixed; left: 0; top: 0;
+    width: 30px; height: 30px;
+    pointer-events: none; z-index: 999;
+    transform: translate(-8px, -6px);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.25));
+  }
+  .cursor.pressed svg { transform: scale(.82); }
+  .cursor svg { transition: transform .08s; }
+  .panel {
+    width: 660px;
+    background: #FFFFFF;
+    border: 1px solid #E7E4DC;
+    border-radius: 16px;
+    padding: 20px 22px 16px;
+    box-shadow: 0 18px 50px rgba(120, 90, 30, .10);
+    user-select: none;
+  }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .header { margin-bottom: 14px; }
+  .header .title { font-size: 15px; font-weight: 700; color: #1C1C1A; }
+  .header .status { font-size: 12px; color: #8C8C85; margin-left: 8px; }
+  .label { font-size: 12.5px; color: #4A4A45; width: 34px; }
+  .select {
+    position: relative; width: 172px;
+  }
+  .select .box {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1.5px solid #DCDCD2; border-radius: 9px;
+    padding: 6px 10px; font-size: 12.5px; color: #1C1C1A; background: #FFF;
+    cursor: none; transition: border-color .15s, box-shadow .15s;
+  }
+  .select .box.focus, .select.open .box { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245,158,11,.16); }
+  .select .box .arrow { color: #8C8C85; font-size: 10px; }
+  .select .menu {
+    position: absolute; top: calc(100% + 6px); left: 0; width: 100%;
+    background: #FFF; border: 1px solid #E7E4DC; border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.10);
+    max-height: 220px; overflow: auto; padding: 4px;
+    display: none; z-index: 50;
+  }
+  .select.open .menu { display: block; }
+  .select .menu .opt {
+    padding: 7px 10px; border-radius: 7px; font-size: 12.5px; color: #3A3A37; cursor: none;
+    transition: background .12s, color .12s;
+  }
+  .select .menu .opt:hover { background: #FFF4E0; color: #92400E; }
+  .select .menu .opt.sel { font-weight: 600; color: #B45309; }
+  .btn {
+    border: 1.5px solid #DCDCD2; border-radius: 9px; background: #FFF;
+    padding: 7px 14px; font-size: 12.5px; color: #3A3A37; cursor: none;
+    transition: border-color .15s, color .15s, box-shadow .15s, transform .1s, background .15s;
+  }
+  .btn:hover { border-color: #F59E0B; color: #92400E; box-shadow: 0 0 0 3px rgba(245,158,11,.15); }
+  .btn:active { transform: scale(.95); }
+  .btn.primary { background: #F59E0B; border-color: #F59E0B; color: #FFF; font-weight: 600; }
+  .btn.primary:hover { background: #D97706; border-color: #D97706; color: #FFF; }
+  .btn.pulse { animation: pulse .5s ease; }
+  @keyframes pulse {
+    0% { transform: scale(1); } 35% { transform: scale(1.12); } 100% { transform: scale(1); }
+  }
+  .volume { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+  .volume .track-wrap { position: relative; width: 220px; height: 22px; }
+  .volume input[type=range] {
+    width: 220px; margin: 0; appearance: none; -webkit-appearance: none; background: transparent; cursor: none;
+  }
+  .volume input[type=range]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 3px; background: linear-gradient(to right, #F59E0B 0%, #F59E0B var(--fill, 70%), #E9E7DF var(--fill, 70%), #E9E7DF 100%);
+  }
+  .volume input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%; background: #FFF;
+    border: 3px solid #F59E0B; margin-top: -6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    transition: transform .1s;
+  }
+  .volume input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .volume .pct { font-size: 12.5px; color: #4A4A45; width: 38px; }
+  .hint { margin-top: 12px; font-size: 11px; color: #B4B2AA; }
+  .flash {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 998;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(245,158,11,.18) 0%, rgba(245,158,11,0) 60%);
+  }
+  .flash.on { animation: flash .45s ease-out; }
+  @keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+</style>
+</head>
+<body>
+  <div class="flash" id="flash"></div>
+  <div class="cursor" id="cursor">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+      <path d="M4 2 L20 11 L12.5 12.8 L15 20 L11.5 21.5 L9 14.2 L4 19 Z" fill="#1C1C1A" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <div class="panel">
+    <div class="row header">
+      <span class="title">🔔 任务完成提示音</span>
+      <span class="status" id="status">预设：内置双音提示音</span>
+    </div>
+    <div class="row">
+      <span class="label">声音</span>
+      <div class="select" id="select">
+        <div class="box" id="selectBox"><span id="selText">内置双音提示音</span><span class="arrow">▾</span></div>
+        <div class="menu" id="menu"></div>
+      </div>
+      <button class="btn primary" id="testBtn">测试声音</button>
+      <button class="btn" id="importBtn">导入声音</button>
+      <button class="btn" id="muteBtn">静音</button>
+    </div>
+    <div class="volume">
+      <span class="label">音量</span>
+      <div class="track-wrap">
+        <input type="range" id="vol" min="0" max="100" value="70">
+      </div>
+      <span class="pct" id="volPct">70%</span>
+      <span class="status" id="volState" style="margin-left:6px"></span>
+    </div>
+    <div class="hint" id="hint">预设目录：C:\Users\HtO_o\.dsh\dsh-chime\sounds（放入 mp3/wav/ogg 文件后重启插件即可加入列表）</div>
+  </div>
+
+<script>
+  var PRESETS = [
+    { id: '', name: '内置双音提示音' },
+    { id: '01-欢快铃声.mp3', name: '01-欢快铃声' },
+    { id: '02-双声蜂鸣.mp3', name: '02-双声蜂鸣' },
+    { id: '03-消息弹出.mp3', name: '03-消息弹出' },
+    { id: '04-确认音.mp3', name: '04-确认音' },
+    { id: '05-数字短音.mp3', name: '05-数字短音' },
+    { id: '06-快速叮咚.mp3', name: '06-快速叮咚' },
+    { id: '07-气泡通知.mp3', name: '07-气泡通知' },
+    { id: '08-清亮提示音.mp3', name: '08-清亮提示音' },
+    { id: '09-吉他通知.mp3', name: '09-吉他通知' },
+    { id: '10-游戏成功.mp3', name: '10-游戏成功' }
+  ];
+  var current = { preset: '', volume: 70, muted: false };
+
+  var cursorEl = document.getElementById('cursor');
+  var flashEl = document.getElementById('flash');
+  var statusEl = document.getElementById('status');
+  var selectEl = document.getElementById('select');
+  var selectBox = document.getElementById('selectBox');
+  var selText = document.getElementById('selText');
+  var menuEl = document.getElementById('menu');
+  var volInput = document.getElementById('vol');
+  var volPct = document.getElementById('volPct');
+  var volState = document.getElementById('volState');
+  var testBtn = document.getElementById('testBtn');
+  var muteBtn = document.getElementById('muteBtn');
+  var hintEl = document.getElementById('hint');
+
+  // fake cursor follows the pointer; "focus" follows the cursor
+  document.addEventListener('pointermove', function (e) {
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top = e.clientY + 'px';
+    flashEl.style.setProperty('--x', e.clientX + 'px');
+    flashEl.style.setProperty('--y', e.clientY + 'px');
+  });
+  document.addEventListener('pointerdown', function () { cursorEl.classList.add('pressed'); });
+  document.addEventListener('pointerup', function () { cursorEl.classList.remove('pressed'); });
+
+  // dropdown
+  PRESETS.forEach(function (p) {
+    var o = document.createElement('div');
+    o.className = 'opt' + (p.id === current.preset ? ' sel' : '');
+    o.textContent = p.name;
+    o.addEventListener('click', function () {
+      current.preset = p.id;
+      selText.textContent = p.name;
+      menuEl.querySelectorAll('.opt').forEach(function (x) { x.classList.remove('sel'); });
+      o.classList.add('sel');
+      selectEl.classList.remove('open');
+      refresh();
+      beep();
+    });
+    menuEl.appendChild(o);
+  });
+  selectBox.addEventListener('click', function () { selectEl.classList.toggle('open'); });
+  document.addEventListener('click', function (e) { if (!selectEl.contains(e.target)) selectEl.classList.remove('open'); });
+
+  // volume
+  function refresh() {
+    var fill = current.volume;
+    volInput.style.setProperty('--fill', fill + '%');
+    volPct.textContent = fill + '%';
+    volInput.value = fill;
+    if (current.muted) {
+      statusEl.textContent = '已静音';
+      muteBtn.textContent = '恢复声音';
+      volState.textContent = '';
+    } else if (fill <= 0) {
+      statusEl.textContent = '音量 0%（静音）';
+      muteBtn.textContent = '静音';
+      volState.textContent = '';
+    } else {
+      statusEl.textContent = '预设：' + selText.textContent;
+      muteBtn.textContent = '静音';
+      volState.textContent = '';
+    }
+  }
+  volInput.addEventListener('input', function () { current.volume = Number(volInput.value); refresh(); });
+
+  // buttons
+  testBtn.addEventListener('click', function () {
+    testBtn.classList.remove('pulse'); void testBtn.offsetWidth; testBtn.classList.add('pulse');
+    beep();
+  });
+  muteBtn.addEventListener('click', function () { current.muted = !current.muted; refresh(); });
+  importBtn.addEventListener('click', function () {
+    flashEl.classList.remove('on'); void flashEl.offsetWidth; flashEl.classList.add('on');
+  });
+
+  // Web Audio beep so clicking "测试声音" actually plays a sound
+  var actx = null;
+  function beep() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!actx) actx = new AC();
+      if (actx.state === 'suspended') actx.resume();
+      var now = actx.currentTime;
+      var vol = Math.max(0.01, current.volume / 100);
+      [880, 1318.51].forEach(function (freq, i) {
+        var t = now + i * 0.16;
+        var o = actx.createOscillator();
+        var g = actx.createGain();
+        o.type = 'sine'; o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.22 * vol, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+        o.connect(g); g.connect(actx.destination);
+        o.start(t); o.stop(t + 0.5);
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  refresh();
+</script>
+</body>
+</html>

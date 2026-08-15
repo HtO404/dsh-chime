@@ -1,0 +1,11 @@
+{
+  "name": "dsh-chime-demo-tooling",
+  "private": true,
+  "type": "module",
+  "description": "Regenerates docs/demo.gif by driving docs/demo.html in system Chrome and encoding frames with gifenc (no ffmpeg needed).",
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "playwright-core": "^1.49.0",
+    "pngjs": "^7.0.0"
+  }
+}
