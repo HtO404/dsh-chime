@@ -1,7 +1,7 @@
 {
   "name": "@hto404/dsh-chime",
   "description": "Task-completion notification chime for the dsh web GUI: plays a sound when a root agent turn finishes, even while the tab is in the background. Persistent host+client plugin with 10 preset sounds, custom sound import, volume control and a Settings > Plugins panel.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
