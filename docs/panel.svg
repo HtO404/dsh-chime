@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200" font-family="-apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <defs>
+    <linearGradient id="fill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#FBBF24"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="200" rx="18" fill="#FFFFFF" stroke="#E4E4DC" stroke-width="1.5"/>
+
+  <!-- header row -->
+  <text x="24" y="34" font-size="15" font-weight="700" fill="#1C1C1A">🔔 任务完成提示音</text>
+  <text x="24" y="54" font-size="11" fill="#8C8C85">预设：06-快速叮咚 · 音量 70%</text>
+
+  <!-- controls row -->
+  <text x="24" y="92" font-size="12" fill="#4A4A45">声音</text>
+  <rect x="62" y="74" width="150" height="26" rx="8" fill="#FFFFFF" stroke="#D6D6CE" stroke-width="1.2"/>
+  <text x="72" y="91" font-size="12" fill="#1C1C1A">06-快速叮咚</text>
+  <text x="196" y="91" font-size="10" fill="#8C8C85">▾</text>
+
+  <rect x="228" y="74" width="82" height="26" rx="8" fill="#F59E0B"/>
+  <text x="269" y="91" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF">测试声音</text>
+
+  <rect x="318" y="74" width="82" height="26" rx="8" fill="#FFFFFF" stroke="#D6D6CE" stroke-width="1.2"/>
+  <text x="359" y="91" text-anchor="middle" font-size="12" fill="#4A4A45">导入声音</text>
+
+  <rect x="408" y="74" width="62" height="26" rx="8" fill="#FFFFFF" stroke="#D6D6CE" stroke-width="1.2"/>
+  <text x="439" y="91" text-anchor="middle" font-size="12" fill="#4A4A45">静音</text>
+
+  <!-- volume row -->
+  <text x="24" y="136" font-size="12" fill="#4A4A45">音量</text>
+  <rect x="62" y="124" width="160" height="5" rx="2.5" fill="#E8E8E2"/>
+  <rect x="62" y="124" width="112" height="5" rx="2.5" fill="url(#fill)"/>
+  <circle cx="174" cy="126.5" r="9" fill="#FFFFFF" stroke="#F59E0B" stroke-width="2.5"/>
+  <text x="236" y="130" font-size="12" fill="#4A4A45">70%</text>
+
+  <!-- hint -->
+  <text x="24" y="176" font-size="10.5" fill="#B0B0A8">预设目录：C:\Users\HtO_o\.dsh\dsh-chime\sounds（放入 mp3/wav/ogg 即可加入列表）</text>
+</svg>
