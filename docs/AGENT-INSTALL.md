@@ -28,8 +28,14 @@ dsh-chime 给 DSH Web GUI 加「任务完成提示音」：根 agent 回合结�
 ### 方式 A：npm 安装（推荐，最干净）
 
 ```bash
+# Web profile（浏览器 / 3080 端口那套）
 dsh plugin --profile web add @hto404/dsh-chime
+
+# DSH Desktop 桌面端（用桌面端的话，装进 desktop profile）
+dsh plugin --profile desktop add @hto404/dsh-chime
 ```
+
+> 插件行（`~/.dsh/cordis.patch.yml` 的 `id: chime`）对所有环境生效；把包装进对应 profile 的 `node_modules` 即可。**设置由 Host 统一存储在 `~/.dsh/dsh-chime/prefs.json`**，网页端与桌面端共享同一份音量 / 静音 / 所选声音。
 
 如果 `dsh` 不在 PATH，用 DSH 部署目录的 node 直接跑：
 
@@ -47,9 +53,9 @@ curl -L -o dsh-chime.zip https://github.com/HtO404/dsh-chime/archive/refs/heads/
 # 或从 npm 下载 tarball：
 npm pack @hto404/dsh-chime
 
-# 2) 放置到 profile 的 node_modules
-mkdir -p "<DSH_HOME>/profiles/web/node_modules/@hto404"
-cp -r <解压出的包目录> "<DSH_HOME>/profiles/web/node_modules/@hto404/dsh-chime"
+# 2) 放置到 profile 的 node_modules（web 或 desktop，按用户环境二选一）
+mkdir -p "<DSH_HOME>/profiles/<web|desktop>/node_modules/@hto404"
+cp -r <解压出的包目录> "<DSH_HOME>/profiles/<web|desktop>/node_modules/@hto404/dsh-chime"
 ```
 
 ### 方式 C：如果你是 DSH 会话里的 Agent（本机已有 web profile 在跑）

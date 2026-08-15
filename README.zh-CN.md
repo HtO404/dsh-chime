@@ -41,7 +41,7 @@
   <tr>
     <td width="33%" align="center"><b>🔊 音量自由</b><br/><sub>0~100% 滑杆，松手即试听</sub></td>
     <td width="33%" align="center"><b>⚙️ 一处设置，处处生效</b><br/><sub>控制面板在「设置 → 插件」，持久保存</sub></td>
-    <td width="33%" align="center"><b>♻️ 重启自动拉起</b><br/><sub>静态 host + client 插件，随 DSH 自启</sub></td>
+    <td width="33%" align="center"><b>♻️ 重启自动拉起</b><br/><sub>随 DSH 自启；设置跨环境共享（网页端 ↔ DSH Desktop）</sub></td>
   </tr>
 </table>
 
@@ -72,6 +72,14 @@ dsh plugin --profile web add link:C:\path\to\dsh-chime
 ```
 
 然后重启 DSH（`start-dsh.bat`）。
+
+**用 [DSH Desktop](https://github.com/anywhere-labs/deepseek-harness-desktop) 的？** 装进桌面 profile 即可：
+
+```powershell
+dsh plugin --profile desktop add @hto404/dsh-chime
+```
+
+设置由 Host 统一存储（`~/.dsh/dsh-chime/prefs.json`），**网页端与桌面端共享同一份音量 / 静音 / 所选声音**——换环境不用重新配置。
 
 ---
 
@@ -156,6 +164,13 @@ dsh plugin --profile web add link:C:\path\to\dsh-chime
 <summary><b>重启 DSH 后还需要手动开启吗？</b></summary>
 
 不需要。dsh-chime 是随组合挂载的静态插件，DSH 启动即自动拉起，声音设置持久保存。
+
+</details>
+
+<details>
+<summary><b>网页端和 DSH Desktop 之间设置会同步吗？</b></summary>
+
+会。v0.1.2 起设置由 Host 统一存到 `~/.dsh/dsh-chime/prefs.json`（经 `/dsh-chime/prefs` 读写），音量 / 静音 / 所选声音在所有挂载该插件的环境间共享。如果旧页面仍显示默认值，刷新页面（或重启 DSH Desktop）即可。
 
 </details>
 

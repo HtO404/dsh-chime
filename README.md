@@ -41,7 +41,7 @@ The moment a root agent turn finishes, it rings — **even while the tab is in t
   <tr>
     <td width="33%" align="center"><b>🔊 Volume control</b><br/><sub>0–100% slider, preview on release</sub></td>
     <td width="33%" align="center"><b>⚙️ One panel, everything</b><br/><sub>Settings → Plugins, preferences persist</sub></td>
-    <td width="33%" align="center"><b>♻️ Survives restarts</b><br/><sub>Static host + client plugin, auto-starts with DSH</sub></td>
+    <td width="33%" align="center"><b>♻️ Survives restarts</b><br/><sub>Auto-starts with DSH; settings shared across Web & DSH Desktop</sub></td>
   </tr>
 </table>
 
@@ -72,6 +72,14 @@ Place `dsh-chime` under `node_modules/@hto404/` in your web profile, then append
 ```
 
 Restart DSH (`start-dsh.bat`).
+
+**Using [DSH Desktop](https://github.com/anywhere-labs/deepseek-harness-desktop)?** Install into the desktop profile instead:
+
+```powershell
+dsh plugin --profile desktop add @hto404/dsh-chime
+```
+
+Settings are stored host-side (`~/.dsh/dsh-chime/prefs.json`), so your volume, mute state and chosen sound are **shared across every environment** — switch between the Web profile and DSH Desktop without re-configuring.
 
 ---
 
@@ -156,6 +164,13 @@ Two ways: click **导入声音** in the panel and pick a local audio file, or dr
 <summary><b>Do I need to re-enable it after a DSH restart?</b></summary>
 
 No. dsh-chime is a static, composition-mounted plugin — it starts automatically with DSH, and your sound settings persist.
+
+</details>
+
+<details>
+<summary><b>My settings don't carry over between the Web profile and DSH Desktop?</b></summary>
+
+They do — since v0.1.2 the plugin keeps its preferences host-side in `~/.dsh/dsh-chime/prefs.json` (exposed via `/dsh-chime/prefs`), so volume, mute and the chosen sound are shared by every environment that mounts the plugin. If an old page still shows defaults, reload the page (or restart DSH Desktop).
 
 </details>
 
