@@ -6,8 +6,8 @@
 
 `dsh-chime` 是 [DeepSeek Harness](https://github.com/deepseek-ai/dsh)（DSH）Web GUI 的任务完成提示音插件：根 agent 回合结束就响一声——**页面挂在后台标签页也照常响**。你不需要盯着任务列表，它会在对的那一秒提醒你。
 
-[![npm version](https://img.shields.io/npm/v/@linxin666/dsh-chime)](https://www.npmjs.com/package/@linxin666/dsh-chime)
-[![npm downloads](https://img.shields.io/npm/dm/@linxin666/dsh-chime)](https://www.npmjs.com/package/@linxin666/dsh-chime)
+[![npm version](https://img.shields.io/npm/v/@hto404/dsh-chime)](https://www.npmjs.com/package/@hto404/dsh-chime)
+[![npm downloads](https://img.shields.io/npm/dm/@hto404/dsh-chime)](https://www.npmjs.com/package/@hto404/dsh-chime)
 [![license](https://img.shields.io/github/license/HtO404/dsh-chime)](LICENSE)
 [![topic: dsh-plugin](https://img.shields.io/badge/topic-dsh--plugin-2ea44f)](https://github.com/topics/dsh-plugin)
 [![platform](https://img.shields.io/badge/platform-web-6366f1)](https://github.com/HtO404/dsh-chime)
@@ -49,7 +49,7 @@ dsh-chime 的做法很简单：**根 agent 回合结束的那一刻，浏览器�
 dsh plugin --profile web add link:C:\path\to\dsh-chime
 
 # 方式二：npm 安装（发布后）
-dsh plugin --profile web add @linxin666/dsh-chime
+dsh plugin --profile web add @hto404/dsh-chime
 ```
 
 也可以手动安装：把 `dsh-chime` 放进 web profile 的 `node_modules/@linxin666/` 下，在 `~/.dsh/cordis.patch.yml` 追加下面两行，然后重启 DSH：
@@ -57,7 +57,7 @@ dsh plugin --profile web add @linxin666/dsh-chime
 ```yaml
 - insert:
     - id: chime
-      name: '@linxin666/dsh-chime'
+      name: '@hto404/dsh-chime'
 ```
 
 重启后打开 **设置 → 插件 →「🔔 任务完成提示音」**，选声音、调音量、点「测试声音」——完事。之后任意任务跑完（哪怕页面在后台），它都会响。

@@ -5,4 +5,4 @@
 # served at /plugins/chime/client.js) load in the web GUI.
 - insert:
     - id: chime
-      name: '@linxin666/dsh-chime'
+      name: '@hto404/dsh-chime'
